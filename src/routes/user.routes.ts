@@ -1,8 +1,10 @@
-import {Router} from 'express';
-import {createUser} from '../controllers/user.controllers';
+import { Router } from 'express';
+import { getSwipeFeed } from '../controllers/user.controllers';
+import { authenticate } from '../middlewares/authMiddleware';
 
-const router = Router();
+const userRouter = Router();
 
-router.post('/', createUser)
+userRouter.use(authenticate);
+userRouter.get('/feed', getSwipeFeed);
 
-export default router;
+export default userRouter;
