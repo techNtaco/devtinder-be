@@ -7,7 +7,7 @@ const profileRouter = Router();
 profileRouter.use(authenticate);
 
 profileRouter.get('/', getProfile);
-profileRouter.patch('/edit', updateProfile);
+profileRouter.post('/edit', updateProfile);
 profileRouter.patch('/password', updatePassword);
 profileRouter.delete('/delete', deleteMyAccount);
 

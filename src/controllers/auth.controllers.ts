@@ -38,6 +38,15 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
         role: 'user'
       });
 
+      const token = user.generateJWT();
+  
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       const { password: _, ...userObj } = user.toObject();
       res.status(201).json({ message: 'User created', user: userObj });
     } catch (error) {
@@ -56,7 +65,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
       const user = await User.findOne({ email });
       if (!user) {
-        res.status(400).json({ error: "Invalid credentials Halla Bol" });
+        res.status(400).json({ error: "Invalid credentials" });
         return;
       }
   
@@ -75,8 +84,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         maxAge: 7 * 24 * 60 * 60 * 1000,
       });
   
-      const { password: _, ...userData } = user.toObject();
-      res.status(200).json({ message: "Login successful", user: userData });
+      const { password: _, ...userObj } = user.toObject();
+      res.status(200).json({ message: "Login successful", user: userObj });
   
     } catch (error) {
       console.error("Login error:", error);

@@ -68,7 +68,7 @@ const userSchema = new Schema<IUser>({
   
   photoUrl: {
     type: String,
-    default: "https://yourcdn.com/default-profile.png",
+    default: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
     trim: true,
   }
 }, {

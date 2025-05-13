@@ -7,6 +7,10 @@ export const getSwipeFeed = async (req: Request, res: Response): Promise<void> =
   try {
     const currentUserId = new Types.ObjectId(req.user!.id);
 
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
+
     // Step 1: Find all connections involving the current user
     const connections = await Connection.find({
       $or: [
@@ -34,8 +38,12 @@ export const getSwipeFeed = async (req: Request, res: Response): Promise<void> =
 
     // Step 3: Get all users not in excluded list
     const feedUsers = await User.find({
-      _id: { $nin: Array.from(excludedUserIds) }
-    }).select('username email firstName lastName age gender about skills photoUrl'); // Customize fields as needed
+      _id: { $nin: Array.from(excludedUserIds) },
+      role: { $ne: 'admin' }
+    }).select('username email firstName lastName age gender about skills photoUrl')
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
 
     res.status(200).json({ feed: feedUsers });
   } catch (err: any) {
