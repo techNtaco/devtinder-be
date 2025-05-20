@@ -3,7 +3,6 @@ import { User } from '../models/user.model';
 
 export const getProfile = async (req: Request, res: Response): Promise<void> => {
   try {
-    console.log('User ID:', req.user!.id); // Log the user ID for debugging
     const user = await User.findById(req.user!.id).select('-password');
     if (!user) {
       res.status(404).json({ error: 'User not found' });
